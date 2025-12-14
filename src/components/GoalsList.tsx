@@ -41,6 +41,7 @@ const GoalsList = ({ userId }: GoalsListProps) => {
 
     fetchGoals();
 
+    // Realtime as backup sync (not primary UX)
     const channel = supabase
       .channel("goals-changes")
       .on(
@@ -62,6 +63,18 @@ const GoalsList = ({ userId }: GoalsListProps) => {
     };
   }, [userId]);
 
+  const handleGoalStatusChange = (goalId: string, newStatus: string) => {
+    setGoals((prev) =>
+      prev.map((g) =>
+        g.id === goalId ? { ...g, status: newStatus } : g
+      )
+    );
+  };
+
+  const handleGoalDelete = (goalId: string) => {
+    setGoals((prev) => prev.filter((g) => g.id !== goalId));
+  };
+
   const ongoingGoals = goals.filter((g) => g.status === "ongoing");
   const completedGoals = goals.filter((g) => g.status === "completed");
   const failedGoals = goals.filter((g) => g.status === "failed");
@@ -70,7 +83,10 @@ const GoalsList = ({ userId }: GoalsListProps) => {
     return (
       <div className="grid gap-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 bg-card border border-border rounded-lg animate-pulse" />
+          <div
+            key={i}
+            className="h-48 bg-card border border-border rounded-lg animate-pulse"
+          />
         ))}
       </div>
     );
@@ -79,20 +95,32 @@ const GoalsList = ({ userId }: GoalsListProps) => {
   return (
     <Tabs defaultValue="ongoing" className="w-full">
       <TabsList className="grid w-full max-w-md grid-cols-3">
-        <TabsTrigger value="ongoing">Ongoing ({ongoingGoals.length})</TabsTrigger>
-        <TabsTrigger value="completed">Completed ({completedGoals.length})</TabsTrigger>
-        <TabsTrigger value="failed">Failed ({failedGoals.length})</TabsTrigger>
+        <TabsTrigger value="ongoing">
+          Ongoing ({ongoingGoals.length})
+        </TabsTrigger>
+        <TabsTrigger value="completed">
+          Completed ({completedGoals.length})
+        </TabsTrigger>
+        <TabsTrigger value="failed">
+          Failed ({failedGoals.length})
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="ongoing" className="mt-6">
         {ongoingGoals.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No ongoing goals. Create one to get started!</p>
+            No ongoing goals. Create one to get started!
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {ongoingGoals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} userId={userId} />
+              <GoalCard
+                key={goal.id}
+                goal={goal}
+                userId={userId}
+                onStatusChange={handleGoalStatusChange}
+                onDelete={handleGoalDelete}
+              />
             ))}
           </div>
         )}
@@ -101,12 +129,18 @@ const GoalsList = ({ userId }: GoalsListProps) => {
       <TabsContent value="completed" className="mt-6">
         {completedGoals.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No completed goals yet.</p>
+            No completed goals yet.
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {completedGoals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} userId={userId} />
+              <GoalCard
+                key={goal.id}
+                goal={goal}
+                userId={userId}
+                onStatusChange={handleGoalStatusChange}
+                onDelete={handleGoalDelete}
+              />
             ))}
           </div>
         )}
@@ -115,23 +149,18 @@ const GoalsList = ({ userId }: GoalsListProps) => {
       <TabsContent value="failed" className="mt-6">
         {failedGoals.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <p>No failed goals.</p>
+            No failed goals.
           </div>
         ) : (
-          <div className="grid gap-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {failedGoals.map((goal) => (
-              <div
+              <GoalCard
                 key={goal.id}
-                className="flex items-center justify-between p-4 rounded-lg bg-destructive/10 border border-destructive/20"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-destructive" />
-                  <span className="font-medium text-foreground">{goal.title}</span>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {new Date(goal.deadline).toLocaleDateString()}
-                </span>
-              </div>
+                goal={goal}
+                userId={userId}
+                onStatusChange={handleGoalStatusChange}
+                onDelete={handleGoalDelete}
+              />
             ))}
           </div>
         )}

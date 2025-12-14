@@ -42,8 +42,11 @@ interface Goal {
 }
 
 interface GoalCardProps {
+  key: string;
   goal: Goal;
   userId: string;
+  onStatusChange: (goalId: string, newStatus: string) => void;
+  onDelete: (goalId: string) => void;
 }
 
 

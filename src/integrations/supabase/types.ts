@@ -240,6 +240,7 @@ export type Database = {
           description: string | null
           id: string
           is_completed: boolean
+          is_triggered: boolean | null
           reminder_date: string
           title: string
           updated_at: string | null
@@ -250,6 +251,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_completed?: boolean
+          is_triggered?: boolean | null
           reminder_date: string
           title: string
           updated_at?: string | null
@@ -260,6 +262,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_completed?: boolean
+          is_triggered?: boolean | null
           reminder_date?: string
           title?: string
           updated_at?: string | null
