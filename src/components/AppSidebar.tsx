@@ -1,4 +1,4 @@
-import { User, Bell, Coins } from "lucide-react";
+import { User, Bell, Coins, BarChart3, LayoutDashboard, Timer } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Focus", url: "/focus", icon: Timer },
+  { title: "Insights", url: "/insights", icon: BarChart3 },
   { title: "Profile", url: "/profile", icon: User },
   { title: "Reminders", url: "/reminders", icon: Bell },
   { title: "Tokens", url: "/tokens", icon: Coins },

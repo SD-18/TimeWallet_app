@@ -84,7 +84,7 @@ const WalletBalance = ({ userId }: WalletBalanceProps) => {
           <div>
             <p className="text-sm text-muted-foreground mb-1 flex items-center gap-2">
               <Wallet className="w-4 h-4" />
-              Time Wallet
+              Time Balance
             </p>
             <div className="flex items-baseline gap-3">
               <h2 className={`text-5xl font-bold ${time.isNegative ? "text-destructive" : "text-foreground"}`}>
@@ -104,7 +104,7 @@ const WalletBalance = ({ userId }: WalletBalanceProps) => {
               ) : (
                 <span className="flex items-center gap-1 text-success">
                   <TrendingUp className="w-3 h-3" />
-                  Invested
+                  Available to invest
                 </span>
               )}
             </p>

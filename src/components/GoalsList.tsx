@@ -10,8 +10,11 @@ interface Goal {
   deadline: string;
   time_allocated: number;
   status: string;
-  created_at: string;
-  last_progress_update: string;
+  created_at: string | null;
+  updated_at: string | null;
+  category: string | null;
+  last_progress_update: string | null;
+  user_id: string;
 }
 
 interface GoalsListProps {
@@ -87,7 +90,7 @@ const GoalsList = ({ userId }: GoalsListProps) => {
             <p>No ongoing goals. Create one to get started!</p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             {ongoingGoals.map((goal) => (
               <GoalCard key={goal.id} goal={goal} userId={userId} />
             ))}
@@ -101,7 +104,7 @@ const GoalsList = ({ userId }: GoalsListProps) => {
             <p>No completed goals yet.</p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             {completedGoals.map((goal) => (
               <GoalCard key={goal.id} goal={goal} userId={userId} />
             ))}
@@ -115,9 +118,20 @@ const GoalsList = ({ userId }: GoalsListProps) => {
             <p>No failed goals.</p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-2">
             {failedGoals.map((goal) => (
-              <GoalCard key={goal.id} goal={goal} userId={userId} />
+              <div
+                key={goal.id}
+                className="flex items-center justify-between p-4 rounded-lg bg-destructive/10 border border-destructive/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-destructive" />
+                  <span className="font-medium text-foreground">{goal.title}</span>
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {new Date(goal.deadline).toLocaleDateString()}
+                </span>
+              </div>
             ))}
           </div>
         )}

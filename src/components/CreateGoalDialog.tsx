@@ -21,10 +21,22 @@ interface CreateGoalDialogProps {
   userId: string;
 }
 
+const CATEGORIES = [
+  { value: "study", label: "Study" },
+  { value: "fitness", label: "Fitness" },
+  { value: "career", label: "Career" },
+  { value: "personal", label: "Personal" },
+  { value: "creative", label: "Creative" },
+  { value: "health", label: "Health" },
+  { value: "finance", label: "Finance" },
+  { value: "general", label: "General" },
+];
+
 const CreateGoalDialog = ({ open, onOpenChange, userId }: CreateGoalDialogProps) => {
   const [loading, setLoading] = useState(false);
   const [timeUnit, setTimeUnit] = useState<"hours" | "days">("hours");
   const [useAIEstimate, setUseAIEstimate] = useState(false);
+  const [category, setCategory] = useState("general");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,6 +84,7 @@ const CreateGoalDialog = ({ open, onOpenChange, userId }: CreateGoalDialogProps)
           deadline: deadline.toISOString(),
           time_allocated: finalHours * 3600,
           status: "ongoing",
+          category,
         })
         .select()
         .single();
@@ -128,6 +141,22 @@ const CreateGoalDialog = ({ open, onOpenChange, userId }: CreateGoalDialogProps)
               required
               disabled={loading}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger disabled={loading}>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

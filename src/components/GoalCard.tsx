@@ -34,7 +34,11 @@ interface Goal {
   deadline: string;
   time_allocated: number;
   status: string;
-  last_progress_update: string;
+  created_at: string | null;
+  updated_at: string | null;
+  category: string | null;
+  last_progress_update: string | null;
+  user_id: string;
 }
 
 interface GoalCardProps {
@@ -42,10 +46,19 @@ interface GoalCardProps {
   userId: string;
 }
 
+
+
 const GoalCard = ({ goal, userId }: GoalCardProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  
+  const [goalStatus, setGoalStatus] = useState<string>(goal.status);
+  
+  useEffect(() => {
+    setGoalStatus(goal.status);
+  }, [goal.status]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -86,26 +99,37 @@ const GoalCard = ({ goal, userId }: GoalCardProps) => {
         .update({ last_progress_update: new Date().toISOString() })
         .eq("id", goal.id);
 
-      // Check if all tasks are completed and goal is before deadline
+      // Check if all tasks are completed
       const allCompleted = updatedTasks.every((t) => t.completed);
-      const beforeDeadline = new Date(goal.deadline) > new Date();
+      const isOverdueNow = new Date(goal.deadline) < new Date();
       
-      if (allCompleted && beforeDeadline && goal.status === "ongoing") {
-        await completeGoalEarly();
+      if (allCompleted && goalStatus === "ongoing") {
+        if (isOverdueNow) {
+          // Mark as failed if overdue
+          await markGoalFailed();
+        } else {
+          // Mark as completed if before deadline
+          await completeGoalEarly();
+        }
       }
     }
     setLoading(false);
   };
 
   const completeGoalEarly = async () => {
+
+      setGoalStatus("completed"); 
+
     // Mark goal as completed
     const { error: goalError } = await supabase
       .from("goals")
       .update({ status: "completed" })
       .eq("id", goal.id);
 
+
     if (goalError) {
       toast.error("Failed to complete goal");
+      setGoalStatus("ongoing");
       return;
     }
 
@@ -116,19 +140,24 @@ const GoalCard = ({ goal, userId }: GoalCardProps) => {
     });
 
     if (!profileError) {
-      // Record transaction
-      await supabase
-        .from("transactions")
-        .insert({
-          user_id: userId,
-          goal_id: goal.id,
-          type: "credit",
-          amount: goal.time_allocated,
-          reason: `Completed goal: "${goal.title}"`,
-        });
+
 
       toast.success(`Goal completed! ${Math.round(goal.time_allocated / 3600)}h added to your wallet`);
     }
+  };
+
+  const markGoalFailed = async () => {
+    const { error: goalError } = await supabase
+      .from("goals")
+      .update({ status: "failed" })
+      .eq("id", goal.id);
+
+    if (goalError) {
+      toast.error("Failed to update goal status");
+      return;
+    }
+
+    toast.info("Goal marked as failed - deadline was missed");
   };
 
   const deleteGoal = async () => {
@@ -165,18 +194,18 @@ const GoalCard = ({ goal, userId }: GoalCardProps) => {
 
   const completedTasks = tasks.filter((t) => t.completed).length;
   const progress = tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
-  const isOverdue = new Date(goal.deadline) < new Date() && goal.status === "ongoing";
+  const isOverdue = new Date(goal.deadline) < new Date() && goalStatus === "ongoing";
 
   const getStatusIcon = () => {
-    if (goal.status === "completed") return <CheckCircle2 className="w-5 h-5 text-success" />;
-    if (goal.status === "failed") return <XCircle className="w-5 h-5 text-destructive" />;
+    if (goalStatus === "completed") return <CheckCircle2 className="w-5 h-5 text-success" />;
+    if (goalStatus === "failed") return <XCircle className="w-5 h-5 text-destructive" />;
     if (isOverdue) return <AlertCircle className="w-5 h-5 text-warning" />;
     return <Clock className="w-5 h-5 text-primary" />;
   };
 
   const getStatusBadge = () => {
-    if (goal.status === "completed") return <Badge className="bg-success">Completed</Badge>;
-    if (goal.status === "failed") return <Badge variant="destructive">Failed</Badge>;
+    if (goalStatus === "completed") return <Badge className="bg-success">Completed</Badge>;
+    if (goalStatus === "failed") return <Badge variant="destructive">Failed</Badge>;
     if (isOverdue) return <Badge className="bg-warning text-warning-foreground">Overdue</Badge>;
     return <Badge>Ongoing</Badge>;
   };
@@ -236,7 +265,7 @@ const GoalCard = ({ goal, userId }: GoalCardProps) => {
           {tasks.length > 0 && goal.status === "ongoing" && (
             <div className="space-y-2">
               <p className="text-sm font-medium">Tasks</p>
-              <div className="space-y-2">
+              <div className="space-y-2 max-h-48 overflow-y-auto">
                 {tasks.map((task) => (
                   <div
                     key={task.id}

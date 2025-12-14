@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import WalletBalance from "@/components/WalletBalance";
 import GoalsList from "@/components/GoalsList";
 import CreateGoalDialog from "@/components/CreateGoalDialog";
-import TransactionHistory from "@/components/TransactionHistory";
+
 import Notepad from "@/components/Notepad";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -68,21 +68,29 @@ const Dashboard = () => {
           </header>
 
           <main className="container mx-auto px-4 py-8 space-y-8">
-            <WalletBalance userId={session.user.id} />
-
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Your Goals</h2>
-              <Button onClick={() => setIsCreateGoalOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                New Goal
-              </Button>
+            {/* Top Section - Wallet & Quick Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <WalletBalance userId={session.user.id} />
+              </div>
+              <div className="flex flex-col gap-4">
+                <Button 
+                  onClick={() => setIsCreateGoalOpen(true)} 
+                  className="w-full h-16 text-lg"
+                  size="lg"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create New Goal
+                </Button>
+                <Notepad userId={session.user.id} />
+              </div>
             </div>
 
-            <GoalsList userId={session.user.id} />
-            
-            <Notepad userId={session.user.id} />
-            
-            <TransactionHistory userId={session.user.id} />
+            {/* Goals Section */}
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold">Your Goals</h2>
+              <GoalsList userId={session.user.id} />
+            </div>
           </main>
 
           <CreateGoalDialog

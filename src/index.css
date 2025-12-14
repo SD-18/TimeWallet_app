@@ -7,64 +7,83 @@ All colors MUST be HSL.
 */
 
 @layer base {
-  :root {
-    --background: 240 33% 18%;
-    --foreground: 0 0% 100%;
+/* === Warm & Earthy — Expanded (Terracotta Default) === */
+/* === Warm & Earthy (paste into globals.css) === */
+:root {
+  --background: 35 30% 96%;           /* soft cream */
+  --foreground: 25 12% 12%;           /* dark brown text */
 
-    --card: 245 30% 24% / 0.5;
-    --card-foreground: 0 0% 100%;
+  --card: 30 18% 96% / 1;             /* card warm off-white */
+  --card-foreground: 25 12% 12%;
 
-    --popover: 245 30% 24% / 0.8;
-    --popover-foreground: 0 0% 100%;
+  --popover: 30 18% 96% / 0.95;
+  --popover-foreground: 25 12% 12%;
 
-    --primary: 280 100% 70%;
-    --primary-foreground: 0 0% 100%;
+  --primary: 18 70% 45%;              /* terracotta */
+  --primary-foreground: 0 0% 100%;
 
-    --secondary: 340 92% 68%;
-    --secondary-foreground: 0 0% 100%;
+  --secondary: 18 70% 45%;            /* warm gold */
+  --secondary-foreground: 0 0% 6%;
 
-    --muted: 245 25% 35% / 0.4;
-    --muted-foreground: 210 20% 85%;
+  --muted: 30 18% 85% / 0.6;
+  --muted-foreground: 25 12% 40%;
 
-    --accent: 190 100% 60%;
-    --accent-foreground: 0 0% 100%;
+  --accent: 20 60% 35%;               /* deep rust */
+  --accent-foreground: 0 0% 100%;
 
-    --success: 145 80% 62%;
-    --success-foreground: 0 0% 100%;
+  --success: 120 35% 35%;             /* muted olive */
+  --success-foreground: 0 0% 100%;
 
-    --warning: 40 98% 70%;
-    --warning-foreground: 240 33% 18%;
+  --warning: 35 90% 50%;              /* warm yellow */
+  --warning-foreground: 25 12% 12%;
 
-    --destructive: 0 90% 65%;
-    --destructive-foreground: 0 0% 100%;
+  --destructive: 0 75% 55%;           /* red */
+  --destructive-foreground: 0 0% 100%;
 
-    --border: 245 40% 50% / 0.3;
-    --input: 245 25% 35%;
-    --ring: 280 100% 70%;
+  --border: 30 18% 78% / 0.6;
+  --input: 35 20% 94%;
+  --ring: 18 70% 45%;
 
-    --radius: 0.75rem;
+  --radius: 0.75rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(280 100% 70%), hsl(340 92% 68%));
-    --gradient-card: linear-gradient(135deg, hsl(245 30% 28% / 0.6), hsl(245 30% 22% / 0.4));
-    --gradient-accent: linear-gradient(135deg, hsl(190 100% 60%), hsl(280 100% 70%));
-    --glow-primary: 0 0 80px hsl(280 100% 70% / 0.5);
-    --glow-accent: 0 0 80px hsl(190 100% 60% / 0.5);
-    --glow-secondary: 0 0 80px hsl(340 92% 68% / 0.5);
-    
-    --sidebar-background: 245 30% 24%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 280 100% 70%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 245 25% 35%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 245 25% 35%;
-    --sidebar-ring: 280 100% 70%;
-  }
+  --gradient-primary: linear-gradient(135deg, hsl(41, 10%, 43%), hsl(45, 9%, 17%));
+  --gradient-card: linear-gradient(135deg, hsl(35 18% 96% / 1), hsl(30 18% 94% / 1));
+  --gradient-accent: linear-gradient(135deg, hsl(19, 77%, 9%), hsl(18 70% 45%));
+  --glow-primary: 0 0 40px hsl(18 70% 45% / 0.18);
+  --glow-accent: 0 0 40px hsl(20 60% 35% / 0.12);
 
-  .dark {
-    --background: 220 25% 6%;
-    --foreground: 210 40% 98%;
-  }
+  --sidebar-background: 28 60% 50%;
+  --sidebar-foreground: 25 12% 12%;
+  --sidebar-primary: 18 70% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 18 70% 45%;
+  --sidebar-accent-foreground: 25 12% 12%;
+  --sidebar-border: 30 18% 86%;
+  --sidebar-ring: 18 70% 45%;
+}
+/* Mild dark variant (warm & not too dark) */
+.dark {
+  --background: 34 22% 12%;    /* warm deep tan */
+  --foreground: 30 10% 94%;
+
+  --card: 30 18% 16% / 0.92;
+  --card-foreground: 30 10% 94%;
+
+  --primary: 18 60% 46%;
+  --secondary: 28 55% 48%;
+  --muted: 30 18% 20% / 0.5;
+  --input: 30 16% 18%;
+  --border: 30 18% 18% / 0.6;
+
+  /* adjust surfaces */
+  --surface-1: 30 18% 14% / 0.95;
+  --surface-2: 28 18% 12% / 0.95;
+
+  /* desaturate glows for dark */
+  --glow-primary: 0 0 28px hsl(18 60% 46% / 0.12);
+  --glow-accent: 0 0 28px hsl(20 55% 36% / 0.10);
+}
+
 }
 
 @layer base {

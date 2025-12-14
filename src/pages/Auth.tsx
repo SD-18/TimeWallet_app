@@ -134,8 +134,9 @@ const Auth = () => {
                       type="email"
                       placeholder="you@example.com"
                       required
-                    />
+                      />
                   </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="signin-password">Password</Label>
                     <Input
@@ -143,13 +144,43 @@ const Auth = () => {
                       name="signin-password"
                       type="password"
                       required
-                    />
+                      />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Signing in..." : "Sign In"}
-                  </Button>
+
+    {/* --- Forgot Password Button --- */}
+          <button
+            type="button"
+            onClick={async () => {
+            const email = (
+            document.getElementById("signin-email") as HTMLInputElement
+            )?.value;
+
+            if (!email) {
+              toast.error("Please enter your email first.");
+              return;
+            }
+
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+              redirectTo: `${window.location.origin}/resetpassword`,
+            });
+
+            if (error) {
+              toast.error(error.message);
+             } else {
+                toast.success("Password reset link sent to your email.");
+             }
+              }}
+            className="text-sm text-primary hover:underline"
+             >
+            Forgot Password?
+          </button>
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Signing in..." : "Sign In"}
+          </Button>
                 </form>
               </TabsContent>
+
 
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
